@@ -1,0 +1,46 @@
+---
+# File: roles/cjsteel.python_venvs/tasks/assert.yml
+
+- name: Assert python_venvs_base_dir is defined
+  assert:
+    that:
+      - python_venvs_base_dir is defined
+      - python_venvs_base_dir | length > 0
+    fail_msg: "The 'python_venvs_base_dir' variable must be defined and cannot be empty."
+
+- name: Assert python_venvs is defined
+  assert:
+    that:
+      - python_venvs is defined
+      - python_venvs | length > 0
+    fail_msg: "The 'python_venvs' variable must be defined and cannot be empty."
+
+- name: Assert each virtual environment has a valid name
+  assert:
+    that:
+      - item.name is defined
+      - item.name | length > 0
+    fail_msg: "Each item in 'python_venvs' must have a non-empty 'name'."
+  with_items: "{{ python_venvs }}"
+  loop_control:
+    label: "{{ item.name | default('undefined') }}"
+
+- name: Assert each virtual environment has a list of packages
+  assert:
+    that:
+      - item.packages is defined
+      - item.packages | length > 0
+      - item.packages is iterable
+    fail_msg: "Each virtual environment must have a non-empty 'packages' list."
+  with_items: "{{ python_venvs }}"
+  loop_control:
+    label: "{{ item.name | default('undefined') }}"
+
+#- name: Assert each package entry is a valid string
+#  assert:
+#    that:
+#      - item.packages | map('type_debug') | map('==', 'str') | min
+#    fail_msg: "Each package entry must be a valid string."
+#  with_items: "{{ python_venvs }}"
+#  loop_control:
+#    label: "{{ item.name | default('undefined') }}"

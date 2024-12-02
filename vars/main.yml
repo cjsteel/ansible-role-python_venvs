@@ -1,0 +1,45 @@
+---
+# vars file for python_virtualenv
+
+# Define packages required for virtualenv based on Python version and OS
+_python_virtualenv_packages:
+  2:
+    default:
+      - python-virtualenv
+      - python-setuptools
+  3:
+    default:
+      - python3-virtualenv
+      - python3-setuptools
+    Alpine:
+      - py3-virtualenv
+      - py3-setuptools
+      - python3-dev
+
+# Determine the list of packages based on Python version and OS
+python_virtualenv_packages: >-
+  {{ _python_virtualenv_packages[ansible_python.version.major | int][ansible_os_family] |
+  default(_python_virtualenv_packages[ansible_python.version.major | int]['default'] |
+  default(_python_virtualenv_packages['3']['default'])) }}
+
+# Define the virtualenv package state (e.g., present or latest)
+_python_virtualenv_package_state:
+  default: latest
+  RedHat-7: present
+
+python_virtualenv_package_state: "{{ _python_virtualenv_package_state[ansible_os_family] | default(_python_virtualenv_package_state['default']) }}"
+
+# Define the virtualenv binary (if needed to customize for specific systems)
+_python_virtualenv_binary:
+  default: virtualenv
+  Alpine: virtualenv
+  RedHat-7: /usr/bin/virtualenv
+
+python_virtualenv_binary: "{{ _python_virtualenv_binary[ansible_os_family] | default(_python_virtualenv_binary['default']) }}"
+
+# Define pip upgrade behavior
+_python_virtualenv_pip_state:
+  default: latest
+  RedHat-7: present
+
+python_virtualenv_pip_state: "{{ _python_virtualenv_pip_state[ansible_os_family] | default(_python_virtualenv_pip_state['default']) }}"
