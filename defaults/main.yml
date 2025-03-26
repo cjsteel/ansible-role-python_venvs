@@ -1,20 +1,20 @@
 ---
 # File: roles/cjsteel.python_venvs/defaults/main.yml
 
-# Default base directory for virtual environments
 python_venvs_base_dir: "~/.venvs"
 
-# Default list of virtual environments with preconfigured packages
 python_venvs:
-  - name: "ansible-6.6.0"
-    packages:
-      - "ansible[aws,azure]==6.6.0"
 
-  - name: "ansible-6.7.0"
+  - name: "ansible"
+    version: "6.6.0"
+    state: true
     packages:
-      - "ansible[aws,azure]==6.7.0"
+      - "ansible==6.6.0"
 
-  - name: "mkdocs-static-i18n-1.2.3"
+  - name: "mkdocs-static-i18n"
+    version: "1.2.3"
+    state: true
     packages:
       - "mkdocs-static-i18n==1.2.3"
       - "mkdocs-material"
+
